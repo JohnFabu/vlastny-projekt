@@ -8,10 +8,21 @@ function ClearDisplay () {
     OLED.clear()
     if (pins.digitalReadPin(DigitalPin.P2) == 0) {
         OLED.writeString("dvere su zatvorene")
+        OLED.newLine()
+        if (alarmOn == 1) {
+            OLED.writeStringNewLine("alarm je spusteny")
+        } else {
+            OLED.writeStringNewLine("alarm je vypnuty")
+        }
     } else {
         OLED.writeString("dvere su otvorene")
+        OLED.newLine()
+        if (alarmOn == 1) {
+            OLED.writeStringNewLine("alarm je spusteny")
+        } else {
+            OLED.writeStringNewLine("alarm je vypnuty")
+        }
     }
-    OLED.newLine()
 }
 function AlarmTurnOn () {
     if (alarmOn == 0) {
@@ -20,7 +31,6 @@ function AlarmTurnOn () {
             music.playTone(988, music.beat(BeatFraction.Whole))
         }
         basic.showIcon(IconNames.Sad)
-        OLED.writeStringNewLine("alarmON")
     }
     alarmOn = 1
 }
@@ -34,7 +44,6 @@ basic.forever(function () {
     ClearDisplay()
     if (input.buttonIsPressed(Button.A) || alarmOn == 1) {
         AlarmTurnOn()
-        OLED.writeStringNewLine("alarm je spusteny")
         if (!(smarthome.crashSensor()) && alarmOn == 1) {
             alarmActive()
             OLED.writeStringNewLine("alarmCrash")
@@ -48,6 +57,5 @@ basic.forever(function () {
         smarthome.Relay(DigitalPin.P16, smarthome.RelayStateList.On)
         alarmOn = 0
         music.stopAllSounds()
-        OLED.writeStringNewLine("alarmOFF")
     }
 })
